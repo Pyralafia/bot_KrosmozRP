@@ -107,13 +107,26 @@
     <Compile Include="BotKrosmozRP.cs" />
     <Compile Include="Manager\ButtonManager.cs" />
     <Compile Include="Manager\CommandManager.cs" />
+    <Compile Include="Manager\FightManager.cs" />
     <Compile Include="Manager\FileManager.cs" />
     <Compile Include="Manager\MessageManager.cs" />
+    <Compile Include="Misc\CommandOption.cs" />
+    <Compile Include="Misc\Fight.cs" />
+    <Compile Include="Misc\Enum.cs" />
+    <Compile Include="Misc\Mob.cs" />
+    <Compile Include="Misc\MobFight.cs" />
+    <Compile Include="Misc\PassifEca.cs" />
+    <Compile Include="Misc\Roll.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Content Include="Files\server.txt" />
+    <Content Include="Files\token.txt" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Files\passif_eca.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,10 +1,9 @@
 ﻿using Bot.Manager;
+using Bot.Misc;
 using Discord;
+using Discord.Interactions;
 using Discord.WebSocket;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Bot
@@ -17,10 +16,14 @@ namespace Bot
         private MessageManager _messageManager;
         private CommandManager _commandManager;
         private ButtonManager _buttonManager;
-
+        private FightManager _fightManager;
+        private PassifEca _eca;
 
         public DiscordSocketClient Client { get { return _client; } }
 
+        public MessageManager MessageManager { get { return _messageManager; } }
+        public FightManager FightManager { get { return _fightManager; } }
+        public PassifEca PassifEca { get { return _eca; } }
 
         public static Task Main(string[] args) => new BotKrosmozRP().MainAsync();
 
@@ -41,13 +44,14 @@ namespace Bot
             _client.ButtonExecuted += _buttonManager.ButtonHandler;
 
             await _client.LoginAsync(TokenType.Bot, token);
+            await _client.StartAsync();
             await Task.Delay(-1);
         }
 
 
         public Task ClientReady()
         {
-            _commandManager.SetGuild(_client.GetGuild(1120772394777325680));
+            _commandManager.SetGuild(_client.GetGuild(FileManager.GetGuildId()));
             _commandManager.SetupCommand();
 
             return Task.CompletedTask;
