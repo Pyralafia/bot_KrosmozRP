@@ -4,6 +4,7 @@ using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 using System;
+using System.Security.Policy;
 using System.Threading.Tasks;
 
 namespace Bot
@@ -13,17 +14,21 @@ namespace Bot
         public static BotKrosmozRP botKrosmoz;
 
         private DiscordSocketClient _client;
-        private MessageManager _messageManager;
         private CommandManager _commandManager;
         private ButtonManager _buttonManager;
-        private FightManager _fightManager;
-        private PassifEca _eca;
+        private PlayerManager _playerManager;
+
+        private ulong guildId;
+        private ulong questChannelId;
+        private string[] passifEca;
 
         public DiscordSocketClient Client { get { return _client; } }
+        public PlayerManager PlayerManager { get { return _playerManager; } }
 
-        public MessageManager MessageManager { get { return _messageManager; } }
-        public FightManager FightManager { get { return _fightManager; } }
-        public PassifEca PassifEca { get { return _eca; } }
+        public ulong GuildId { get { return guildId; } }
+        public ulong QuestChannelId { get { return questChannelId; } }
+
+        public string[] PassifEca { get { return passifEca; } }
 
         public static Task Main(string[] args) => new BotKrosmozRP().MainAsync();
 
@@ -31,11 +36,12 @@ namespace Bot
         {
             string token = FileManager.GetToken();
 
+
             botKrosmoz = this;
 
-            _messageManager = new MessageManager();
             _commandManager = new CommandManager();
             _buttonManager = new ButtonManager();
+            _playerManager = new PlayerManager();
             _client = new DiscordSocketClient();
 
             _client.Log += Log;
@@ -48,10 +54,17 @@ namespace Bot
             await Task.Delay(-1);
         }
 
-
         public Task ClientReady()
         {
-            _commandManager.SetGuild(_client.GetGuild(FileManager.GetGuildId()));
+            ulong[] serverInfo = FileManager.GetServerIDs();
+
+            guildId = serverInfo[0];
+            questChannelId = serverInfo[1];
+
+            passifEca = FileManager.LoadPassifEca();
+            _playerManager.LoadPlayerList(FileManager.LoadPlayers());
+
+            _commandManager.SetGuild(_client.GetGuild(guildId));
             _commandManager.SetupCommand();
 
             return Task.CompletedTask;

@@ -1,4 +1,5 @@
-﻿using Bot.Misc;
+﻿using Bot.Command;
+using Bot.Misc;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
@@ -18,25 +19,33 @@ namespace Bot.Manager
 
         public void SetupCommand()
         {
-            CommandOption scoreSuccess = new CommandOption("success", ApplicationCommandOptionType.Integer, "[Optional] Le score de succès", false);
-            CommandOption gmScoreSuccess = new CommandOption("success", ApplicationCommandOptionType.Integer, "Le score de succès");
+            CommandOption diceString = new CommandOption("roll", ApplicationCommandOptionType.String, "Le roll à effectué au format XdY+Z (où +Z est optionnel)", false);
             CommandOption nbDice = new CommandOption("nb_dés", ApplicationCommandOptionType.Integer, "Le nombre de d10 à lancer");
             CommandOption nbDiceBonus = new CommandOption("dés_modif", ApplicationCommandOptionType.Integer, "Le nombre de dé bonus ou malus (-X si malus)", false);
-            CommandOption idMob = new CommandOption("id_mob", ApplicationCommandOptionType.Integer, "ID du mob à ajouter");
-            CommandOption nbMob = new CommandOption("nb_mob", ApplicationCommandOptionType.Integer, "Nombre de mob à ajouter");
-            CommandOption idQuest = new CommandOption("id_quest", ApplicationCommandOptionType.Integer, "ID de la quete");
+            CommandOption successValue = new CommandOption("success_value", ApplicationCommandOptionType.Integer, "La valeur de succès annoncée par la MJ", false);
+            CommandOption player = new CommandOption("player", ApplicationCommandOptionType.User, "Le joueur à enregistrer");
+            CommandOption linkString = new CommandOption("link_charactersheet", ApplicationCommandOptionType.String, "Le lien complet vers la fiche personnage");
 
-            SlashCommandBuild("roll", "Lance X dés à 10 faces", options: new CommandOption[] { nbDice, scoreSuccess });
-            SlashCommandBuild("gmroll", "Roll as ephemeral", true, new CommandOption[] { nbDice, gmScoreSuccess });
+            //roll command
+            SlashCommandBuild("roll", "Lancer de dé au format classique XdY+Z", options: new CommandOption[] { diceString });
+            SlashCommandBuild("rollstat", "Faire un test de Xd10", options: new CommandOption[] { nbDice });
+            /*
             SlashCommandBuild("rollsag", "Faire un test de sagesse", options: new CommandOption[] { nbDiceBonus });
             SlashCommandBuild("rollagi", "Faire un test d'agilité", options: new CommandOption[] { nbDiceBonus });
             SlashCommandBuild("rollcha", "Faire un test de chance", options: new CommandOption[] { nbDiceBonus });
             SlashCommandBuild("rollfor", "Faire un test de force", options: new CommandOption[] { nbDiceBonus });
             SlashCommandBuild("rollint", "Faire un test d'intelligence", options: new CommandOption[] { nbDiceBonus });
-            SlashCommandBuild("createfight", "Create a fight", true);
-            SlashCommandBuild("addmob", "Add a mob to the current fight", true, options: new CommandOption[] { idMob, nbMob });
-            SlashCommandBuild("closefight", "Close the actual fight", true);
-            SlashCommandBuild("closequest", "Close a quest", true, options: new CommandOption[] { idQuest });
+            SlashCommandBuild("rolleca", "Faire un test de Xd10 en étant un(e) Ecaflip", options: new CommandOption[] { nbDice });
+            */
+
+            //misc command
+            SlashCommandBuild("sheet", "Vous renvois le lien vers votre fiche de personnage");
+
+            //gm command
+            SlashCommandBuild("gmroll", "Lancer de dé au format classique XdY", true, options: new CommandOption[] { diceString });
+            SlashCommandBuild("gmrollstat", "Faire un test de Xd10", true, options: new CommandOption[] { nbDice });
+            SlashCommandBuild("register", "enregistrer un joueur", true, options: new CommandOption[] { player, linkString });
+            SlashCommandBuild("updatequest", "Met à jour le tableau des quêtes", true);
         }
 
         private async void SlashCommandBuild(string name, string description, bool isForGM = false, params CommandOption[] options)
@@ -70,12 +79,24 @@ namespace Bot.Manager
         {
             switch (command.Data.Name)
             {
+                case "sheet":
+                    ProcessSheet(command);
+                    break;
+
                 case "roll":
-                    RollDice(command);
+                    if (AllDiceFormatChecker(command))
+                    {
+                        Roll.RollAllDices(command);
+                    }
                     break;
+
                 case "gmroll":
-                    GmRoll(command);
+                    if (AllDiceFormatChecker(command))
+                    {
+                        Roll.RollAllDices(command, true);
+                    }
                     break;
+
                 case "rollsag":
                 case "rollagi":
                 case "rollcha":
@@ -83,35 +104,84 @@ namespace Bot.Manager
                 case "rollint":
                     await command.RespondAsync($"Commande non disponible pour le moment, un peu de patience !", ephemeral: true);
                     break;
+
+                case "rollstat":
+                    await MessageManager.SendRollStatAnswer(command, Roll.RollTenDice(int.Parse(command.Data.Options.First().Value.ToString())));
+                    break;
+
+                case "gmrollstat":
+                    await MessageManager.SendRollStatAnswer(command, Roll.RollTenDice(int.Parse(command.Data.Options.First().Value.ToString())), true);
+                    break;
+
+                case "rolleca":
+                    ProcessEcaRoll(command);
+                    break;
+
+                case "gmrolleca":
+                    ProcessEcaRoll(command, true);
+                    break;
+
+                case "register":
+                    ProcessRegisterPlayer(command);
+                    break;
+
+                case "updatequest":
+                    await MessageManager.SendQuestBoard(command, QuestManager.GetQuestBoard());
+                    break;
+
                 default:
                     break;
             }
         }
 
-        private int[] ProcessRollCommand(SocketSlashCommand command)
+        private bool AllDiceFormatChecker(SocketSlashCommand command)
         {
-            int[] res = new int[2];
-            res[0] = int.Parse(command.Data.Options.First().Value.ToString());
-            res[1] = -1;
+            bool res = false;
 
-            if (command.Data.Options.Count == 2)
+            try
             {
-                res[1] = int.Parse(command.Data.Options.Last().Value.ToString());
+                string commandOption = command.Data.Options.First().Value.ToString().ToLower();
+                int indexOfD = commandOption.IndexOf('d');
+                int indexOfPlus = commandOption.IndexOf("+");
+                string rightSection = indexOfPlus != -1 ? commandOption.Substring(indexOfD + 1, indexOfPlus - indexOfD - 1) : commandOption.Substring(indexOfD + 1);
+
+                if (indexOfD > 0)
+                {
+                    int.Parse(commandOption.Substring(0, indexOfD ));
+                    int.Parse(rightSection);
+
+                    res = true;
+                }
+            }
+            catch (Exception)
+            {
+                MessageManager.SendEphemeral(command, "Merci d'utiliser le format XdY où X est le nombre de dés à lancés et Y le nombre de face de ces dés.");
             }
 
             return res;
         }
 
-        private async void RollDice(SocketSlashCommand command)
+        private async void ProcessEcaRoll(SocketSlashCommand command, bool isGm = false)
         {
-            int[] commandOptions = ProcessRollCommand(command);
-            await BotKrosmozRP.botKrosmoz.MessageManager.SendRollAnswer(command, Roll.RollDices(commandOptions[0], commandOptions[1]));
+            (string passif, Roll.RollTenRes roll) = Roll.RollEca(int.Parse(command.Data.Options.First().Value.ToString()));
+            await MessageManager.SendRollEca(command, passif, roll, isGm);
         }
 
-        private async void GmRoll(SocketSlashCommand command)
+        private async void ProcessRegisterPlayer(SocketSlashCommand command)
         {
-            int[] commandOptions = ProcessRollCommand(command);
-            await BotKrosmozRP.botKrosmoz.MessageManager.SendRollAnswer(command, Roll.RollDices(commandOptions[0], commandOptions[1]), true);
+            ulong idPlayer = ((IUser)command.Data.Options.First().Value).Id;
+            string link = command.Data.Options.Last().Value.ToString();
+
+            string status = BotKrosmozRP.botKrosmoz.PlayerManager.RegisterPlayer(idPlayer, link);
+
+            await MessageManager.SendEphemeral(command, status);
+        }
+
+        private async void ProcessSheet(SocketSlashCommand command)
+        {
+            ulong id = command.User.Id;
+            string res = BotKrosmozRP.botKrosmoz.PlayerManager.GetPlayerSheet(id);
+            await MessageManager.SendEphemeral(command, res);
         }
     }
 }
