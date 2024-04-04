@@ -106,5 +106,25 @@ namespace Bot.Manager
 
             return res;
         }
+
+        public static List<CharacterSheet> LoadCharacterSheet()
+        {
+            List<CharacterSheet> res = new List<CharacterSheet>();
+            XmlSerializer serializer = new XmlSerializer(typeof(List<CharacterSheet>));
+
+            try
+            {
+                using (StreamReader stream = new StreamReader("../../Files/CharacterSheet.xml"))
+                {
+                    res = (List<CharacterSheet>)serializer.Deserialize(stream);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Unable ton retrieve charactersheet : {e}");
+            }
+
+            return res;
+        }
     }
 }
