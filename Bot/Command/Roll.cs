@@ -20,7 +20,7 @@ namespace Bot.Command
             public int nbFailure;
         }
 
-        public static async void RollAllDices(SocketSlashCommand command, bool asGm = false)
+        public static string[] RollAllDices(SocketSlashCommand command)
         {
             Random random = new Random();
             string options = command.Data.Options.First().Value.ToString().ToLower();
@@ -42,13 +42,16 @@ namespace Bot.Command
             total += additionnal;
             resString[0] = total.ToString();
 
-            await MessageManager.SendRollAnswer(command, resString, asGm);
+            return resString;
         }
 
-        public static RollTenRes RollTenDice(int nbDice, int scoreSuccess = -1)
+        public static RollTenRes RollTenDice(SocketSlashCommand command)
         {
             Random rand = new Random();
             RollTenRes res = new RollTenRes();
+            int nbDice = int.Parse(command.Data.Options.First().Value.ToString());
+            int scoreSuccess = command.Data.Options.Count() > 1 ? int.Parse(command.Data.Options.Last().Value.ToString()) : -1;
+
 
             for (int i = 0; i < nbDice; i++)
             {
@@ -74,14 +77,14 @@ namespace Bot.Command
             return res;
         }
 
-        public static (string eca, RollTenRes roll) RollEca(int nbDice, int scoreSuccess = -1)
+        public static (string eca, RollTenRes roll) RollStatEca(SocketSlashCommand command)
         {
             Random random = new Random();
-            RollTenRes resRoll = RollTenDice(nbDice, scoreSuccess);
+            RollTenRes resRoll = RollTenDice(command);
 
-            string resString = BotKrosmozRP.botKrosmoz.PassifEca[random.Next(6)];
+            string resPassif = BotKrosmozRP.botKrosmoz.PassifEca[random.Next(6)];
 
-            return (resString, resRoll);
+            return (resPassif, resRoll);
         }
 
         // 34% to gain between 10 and 100, return 0 if the sram don't get anything

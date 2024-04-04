@@ -29,14 +29,12 @@ namespace Bot.Manager
             //roll command
             SlashCommandBuild("roll", "Lancer de dé au format classique XdY+Z", options: new CommandOption[] { diceString });
             SlashCommandBuild("rollstat", "Faire un test de Xd10", options: new CommandOption[] { nbDice });
-            /*
-            SlashCommandBuild("rollsag", "Faire un test de sagesse", options: new CommandOption[] { nbDiceBonus });
-            SlashCommandBuild("rollagi", "Faire un test d'agilité", options: new CommandOption[] { nbDiceBonus });
-            SlashCommandBuild("rollcha", "Faire un test de chance", options: new CommandOption[] { nbDiceBonus });
-            SlashCommandBuild("rollfor", "Faire un test de force", options: new CommandOption[] { nbDiceBonus });
-            SlashCommandBuild("rollint", "Faire un test d'intelligence", options: new CommandOption[] { nbDiceBonus });
-            SlashCommandBuild("rolleca", "Faire un test de Xd10 en étant un(e) Ecaflip", options: new CommandOption[] { nbDice });
-            */
+            
+            SlashCommandBuild("rollsag", "Faire un test de sagesse", options: new CommandOption[] { successValue });
+            SlashCommandBuild("rollagi", "Faire un test d'agilité", options: new CommandOption[] { successValue });
+            SlashCommandBuild("rollcha", "Faire un test de chance", options: new CommandOption[] { successValue });
+            SlashCommandBuild("rollfor", "Faire un test de force", options: new CommandOption[] { successValue });
+            SlashCommandBuild("rollint", "Faire un test d'intelligence", options: new CommandOption[] { successValue });
 
             //misc command
             SlashCommandBuild("sheet", "Vous renvois le lien vers votre fiche de personnage");
@@ -77,6 +75,7 @@ namespace Bot.Manager
 
         public async Task SlashCommandHandler(SocketSlashCommand command)
         {
+            string stats = "";
             switch (command.Data.Name)
             {
                 case "sheet":
@@ -86,14 +85,14 @@ namespace Bot.Manager
                 case "roll":
                     if (AllDiceFormatChecker(command))
                     {
-                        Roll.RollAllDices(command);
+                        await MessageManager.SendRollAnswer(command, Roll.RollAllDices(command));
                     }
                     break;
 
                 case "gmroll":
                     if (AllDiceFormatChecker(command))
                     {
-                        Roll.RollAllDices(command, true);
+                        await MessageManager.SendRollAnswer(command, Roll.RollAllDices(command), true);
                     }
                     break;
 
@@ -102,23 +101,23 @@ namespace Bot.Manager
                 case "rollcha":
                 case "rollfor":
                 case "rollint":
+                    //Roll.RollAllDices(command);
                     await command.RespondAsync($"Commande non disponible pour le moment, un peu de patience !", ephemeral: true);
                     break;
 
                 case "rollstat":
-                    await MessageManager.SendRollStatAnswer(command, Roll.RollTenDice(int.Parse(command.Data.Options.First().Value.ToString())));
+                    await MessageManager.SendRollStatAnswer(command, Roll.RollTenDice(command));
                     break;
 
                 case "gmrollstat":
-                    await MessageManager.SendRollStatAnswer(command, Roll.RollTenDice(int.Parse(command.Data.Options.First().Value.ToString())), true);
-                    break;
-
-                case "rolleca":
-                    ProcessEcaRoll(command);
+                    await MessageManager.SendRollStatAnswer(command, Roll.RollTenDice(command), true);
                     break;
 
                 case "gmrolleca":
-                    ProcessEcaRoll(command, true);
+                    if (AllDiceFormatChecker(command))
+                    {
+                        Roll.RollStatEca(command);
+                    }
                     break;
 
                 case "register":
@@ -159,12 +158,6 @@ namespace Bot.Manager
             }
 
             return res;
-        }
-
-        private async void ProcessEcaRoll(SocketSlashCommand command, bool isGm = false)
-        {
-            (string passif, Roll.RollTenRes roll) = Roll.RollEca(int.Parse(command.Data.Options.First().Value.ToString()));
-            await MessageManager.SendRollEca(command, passif, roll, isGm);
         }
 
         private async void ProcessRegisterPlayer(SocketSlashCommand command)
