@@ -133,7 +133,6 @@
     <Compile Include="Manager\MessageManager.cs" />
     <Compile Include="Manager\PlayerManager.cs" />
     <Compile Include="Manager\QuestManager.cs" />
-    <Compile Include="Misc\CharacterSheet.cs" />
     <Compile Include="Misc\CommandOption.cs" />
     <Compile Include="Misc\Fight.cs" />
     <Compile Include="Misc\Enum.cs" />
