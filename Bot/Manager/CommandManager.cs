@@ -116,7 +116,7 @@ namespace Bot.Manager
                 case "gmrolleca":
                     if (AllDiceFormatChecker(command))
                     {
-                        Roll.RollStatEca(command);
+                        Roll.RollTenEca(command);
                     }
                     break;
 

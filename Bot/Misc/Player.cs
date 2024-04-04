@@ -24,4 +24,22 @@ namespace Bot.Misc
             this.link = link;
         }
     }
+
+    public class CharacterSheet
+    {
+        [XmlElement(ElementName = "")]
+        public Classes classe;
+        [XmlElement(ElementName = "")]
+        public int initativ;
+        [XmlElement(ElementName = "")]
+        public int wisdom;
+        [XmlElement(ElementName = "")]
+        public int agility;
+        [XmlElement(ElementName = "")]
+        public int luck;
+        [XmlElement(ElementName = "")]
+        public int strength;
+        [XmlElement(ElementName = "")]
+        public int intelligence;
+    }
 }

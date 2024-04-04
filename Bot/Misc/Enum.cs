@@ -15,7 +15,7 @@ namespace Bot.Misc
         Undefined
     }
 
-    enum Classes
+    public enum Classes
     {
         Ecaflip = 1,
         Eniripsa,

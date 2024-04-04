@@ -14,10 +14,9 @@ namespace Bot.Command
         public struct RollTenRes
         {
             public string series;
-            public string ecaRoll;
             public int nbSuccess;
             public int nbCriticalSuccess;
-            public int nbFailure;
+            public int nbCriticalFailure;
         }
 
         public static string[] RollAllDices(SocketSlashCommand command)
@@ -68,7 +67,7 @@ namespace Bot.Command
                 }
                 else if (roll == 10)
                 {
-                    res.nbFailure++;
+                    res.nbCriticalFailure++;
                 }
 
                 res.series += $" {roll} ";
@@ -77,7 +76,15 @@ namespace Bot.Command
             return res;
         }
 
-        public static (string eca, RollTenRes roll) RollStatEca(SocketSlashCommand command)
+        public static RollTenRes RollStats(SocketSlashCommand command)
+        {
+            RollTenRes res = new RollTenRes();
+            Random rand = new Random();
+
+            return res;
+        }
+
+        public static (string eca, RollTenRes roll) RollTenEca(SocketSlashCommand command)
         {
             Random random = new Random();
             RollTenRes resRoll = RollTenDice(command);

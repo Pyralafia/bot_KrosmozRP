@@ -11,12 +11,15 @@ namespace Bot.Manager
     internal class PlayerManager
     {
         Dictionary<ulong, Player> playerDictio;
+        Dictionary<ulong, CharacterSheet> sheetDictio;
 
         public PlayerManager()
         {
             playerDictio = new Dictionary<ulong, Player>();
+            sheetDictio = new Dictionary<ulong, CharacterSheet>();
         }
 
+        #region // Player admin
         public List<Player> GetPlayerList()
         {
             return playerDictio.Values.ToList();
@@ -61,5 +64,20 @@ namespace Bot.Manager
                 return "Vous n'êtes pas encore enregistrer comme player, ou je bug. Dans les deux cas, contacter la MJ";
             }
         }
+        #endregion
+
+        #region // Character Sheet admin
+        public CharacterSheet GetCharacterSheet(ulong id)
+        {
+            if (sheetDictio.ContainsKey(id))
+            {
+                return sheetDictio[id];
+            }
+            else
+            {
+                return null;
+            }
+        }
+        #endregion
     }
 }
