@@ -79,7 +79,7 @@ namespace Bot.Manager
             switch (command.Data.Name)
             {
                 case "sheet":
-                    ProcessSheet(command);
+                    Admin.SendCharacterSheet(command);
                     break;
 
                 case "roll":
@@ -128,7 +128,7 @@ namespace Bot.Manager
                     break;
 
                 case "register":
-                    ProcessRegisterPlayer(command);
+                    Admin.RegisterPlayer(command);
                     break;
 
                 case "updatequest":
@@ -165,23 +165,6 @@ namespace Bot.Manager
             }
 
             return res;
-        }
-
-        private async void ProcessRegisterPlayer(SocketSlashCommand command)
-        {
-            ulong idPlayer = ((IUser)command.Data.Options.First().Value).Id;
-            string link = command.Data.Options.Last().Value.ToString();
-
-            string status = BotKrosmozRP.botKrosmoz.PlayerManager.RegisterPlayer(idPlayer, link);
-
-            await MessageManager.SendEphemeral(command, status);
-        }
-
-        private async void ProcessSheet(SocketSlashCommand command)
-        {
-            ulong id = command.User.Id;
-            string res = BotKrosmozRP.botKrosmoz.PlayerManager.GetPlayerSheet(id);
-            await MessageManager.SendEphemeral(command, res);
         }
     }
 }
