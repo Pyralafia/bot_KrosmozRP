@@ -101,8 +101,15 @@ namespace Bot.Manager
                 case "rollcha":
                 case "rollfor":
                 case "rollint":
-                    //Roll.RollAllDices(command);
-                    await command.RespondAsync($"Commande non disponible pour le moment, un peu de patience !", ephemeral: true);
+                    if (BotKrosmozRP.botKrosmoz.PlayerManager.GetCharacterSheet(command.User.Id).classe == Classes.Ecaflip)
+                    {
+                        (string passif, Roll.RollTenRes res) = Roll.RollEcaStat(command);
+                        await MessageManager.SendRollStatEcaAnswer(command, passif, res);
+                    }
+                    else
+                    {
+                        await MessageManager.SendRollStatAnswer(command, Roll.RollStats(command));
+                    }
                     break;
 
                 case "rollstat":

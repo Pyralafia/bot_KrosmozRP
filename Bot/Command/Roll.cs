@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace Bot.Command
 {
@@ -44,13 +45,10 @@ namespace Bot.Command
             return resString;
         }
 
-        public static RollTenRes RollTenDice(SocketSlashCommand command)
+        private static RollTenRes RollTen(int nbDice, int scoreSuccess = -1)
         {
             Random rand = new Random();
             RollTenRes res = new RollTenRes();
-            int nbDice = int.Parse(command.Data.Options.First().Value.ToString());
-            int scoreSuccess = command.Data.Options.Count() > 1 ? int.Parse(command.Data.Options.Last().Value.ToString()) : -1;
-
 
             for (int i = 0; i < nbDice; i++)
             {
@@ -72,16 +70,52 @@ namespace Bot.Command
 
                 res.series += $" {roll} ";
             }
-
             return res;
+        }
+
+        public static RollTenRes RollTenDice(SocketSlashCommand command)
+        {
+            int nbDice = int.Parse(command.Data.Options.First().Value.ToString());
+            int scoreSuccess = command.Data.Options.Count() > 1 ? int.Parse(command.Data.Options.Last().Value.ToString()) : -1;
+
+            return RollTen(nbDice, scoreSuccess);
         }
 
         public static RollTenRes RollStats(SocketSlashCommand command)
         {
-            RollTenRes res = new RollTenRes();
-            Random rand = new Random();
+            int nbDice = -1;
+            int scoreSuccess = command.Data.Options.Count() > 1 ? int.Parse(command.Data.Options.Last().Value.ToString()) : -1;
+            CharacterSheet sheet = BotKrosmozRP.botKrosmoz.PlayerManager.GetCharacterSheet(command.User.Id);
 
-            return res;
+            switch (command.Data.Name)
+            {
+                case "rollsag":
+                    nbDice = sheet.wisdom;
+                    break;
+                case "rollagi":
+                    nbDice = sheet.agility;
+                    break;
+                case "rollcha":
+                    nbDice = sheet.luck;
+                    break;
+                case "rollfor":
+                    nbDice = sheet.strength;
+                    break;
+                case "rollint":
+                    nbDice = sheet.intelligence;
+                    break;
+            }
+
+            return RollTen(nbDice, scoreSuccess);
+        }
+
+        public static (string passif, RollTenRes resRoll) RollEcaStat(SocketSlashCommand command)
+        {
+            Random rand = new Random();
+            RollTenRes resRoll = RollStats(command);
+            string resPassif = BotKrosmozRP.botKrosmoz.PassifEca[rand.Next(BotKrosmozRP.botKrosmoz.PassifEca.Length)];
+
+            return (resPassif, resRoll);
         }
 
         public static (string eca, RollTenRes roll) RollTenEca(SocketSlashCommand command)
@@ -89,7 +123,7 @@ namespace Bot.Command
             Random random = new Random();
             RollTenRes resRoll = RollTenDice(command);
 
-            string resPassif = BotKrosmozRP.botKrosmoz.PassifEca[random.Next(6)];
+            string resPassif = BotKrosmozRP.botKrosmoz.PassifEca[random.Next(BotKrosmozRP.botKrosmoz.PassifEca.Length)];
 
             return (resPassif, resRoll);
         }

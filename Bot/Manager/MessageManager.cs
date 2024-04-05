@@ -33,13 +33,13 @@ namespace Bot.Manager
             }
 
             res += $">>> Nb succès critique : {roll.nbCriticalSuccess}\n" +
-                $"Nb echec critique : {roll.nbFailure}\n" +
+                $"Nb echec critique : {roll.nbCriticalFailure}\n" +
                 $"```{roll.series}```";
 
             await command.RespondAsync(res, ephemeral:isGmRoll);
         }
 
-        public static async Task SendRollEca(SocketSlashCommand command, string passif, RollTenRes roll, bool isGmRoll = false)
+        public static async Task SendRollStatEcaAnswer(SocketSlashCommand command, string passif, RollTenRes roll, bool isGmRoll = false)
         {
             string res = $"**{command.User.GlobalName}** : \n\n";
 
@@ -51,7 +51,7 @@ namespace Bot.Manager
             }
 
             res += $">>> Nb succès critique : {roll.nbCriticalSuccess}\n" +
-                $"Nb echec critique : {roll.nbFailure}\n" +
+                $"Nb echec critique : {roll.nbCriticalFailure}\n" +
                 $"```{roll.series}```";
 
             await command.RespondAsync(res, ephemeral: isGmRoll);
