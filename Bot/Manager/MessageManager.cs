@@ -67,7 +67,7 @@ namespace Bot.Manager
             for (int i = 0; i < questList.Count; i++)
             {
                 EmbedBuilder embed = new EmbedBuilder()
-                    .WithTitle(questList[i].name)
+                    .WithTitle($"[{questList[i].id}] {questList[i].name}")
                     .WithDescription(questList[i].description + "\n ---------------------------------")
                     .WithColor(questList[i].rarity == "Classique" ? Color.LightGrey : Color.Orange);
                 embed.AddField("Specifications : ",
