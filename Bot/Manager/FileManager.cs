@@ -60,7 +60,7 @@ namespace Bot.Manager
             {
                 using (StreamReader reader = new StreamReader(stream))
                 {
-                    for (int i = 0; i < 2; i++)
+                    for (int i = 0; i < 3; i++)
                     {
                         res[i] = ulong.Parse(reader.ReadLine());
                     }

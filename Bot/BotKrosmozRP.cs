@@ -20,6 +20,7 @@ namespace Bot
 
         private ulong guildId;
         private ulong questChannelId;
+        private ulong organisationChannelId;
         private string[] passifEca;
 
         public DiscordSocketClient Client { get { return _client; } }
@@ -27,6 +28,7 @@ namespace Bot
 
         public ulong GuildId { get { return guildId; } }
         public ulong QuestChannelId { get { return questChannelId; } }
+        public ulong OrganisationChannelId { get { return organisationChannelId; } }
 
         public string[] PassifEca { get { return passifEca; } }
 
@@ -60,6 +62,7 @@ namespace Bot
 
             guildId = serverInfo[0];
             questChannelId = serverInfo[1];
+            organisationChannelId = serverInfo[2];
 
             passifEca = FileManager.LoadPassifEca();
             _playerManager.LoadPlayerList(FileManager.LoadPlayers());

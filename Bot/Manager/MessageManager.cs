@@ -91,6 +91,62 @@ namespace Bot.Manager
             await command.RespondAsync("Quests updated with success", ephemeral: true);
         }
 
+        public static async Task SendCreateSession(SocketSlashCommand command, Quest quest)
+        {
+            ITextChannel channel = (ITextChannel)await BotKrosmozRP.botKrosmoz.Client.GetChannelAsync(BotKrosmozRP.botKrosmoz.OrganisationChannelId);
+            var boardMessages = await channel.GetMessagesAsync().FlattenAsync();
+            string registeredPlayer = string.Empty;
+            IMessage questBoardMessage;
+            IMessage sendedMessage;
+            IThreadChannel thread;
+            List<IUser> users = new List<IUser>();
+
+            foreach (IMessage m in boardMessages)
+            {
+                string title = m.Embeds.First().Title;
+                string extracedId = title.Substring(1, title.IndexOf(']') - 1);
+
+                if (int.Parse(extracedId) == quest.id)
+                {
+                    questBoardMessage = m;
+                    users = (List<IUser>)await questBoardMessage.GetReactionUsersAsync(new Emoji("\u2705"), 1000).FlattenAsync();
+                    break;
+                }
+            }
+
+            string messageContent = "**Ouverture session** \n" +
+                $"Quête : __{quest.name}__\n";
+
+            if (command.Data.Options.Count != 1)
+            {
+                var options = command.Data.Options.ToArray();
+                messageContent += "Dédiée : ";
+
+                for (int i = 1; i < command.Data.Options.Count; i++)
+                {
+                    messageContent += ((IUser)options[i]).Mention + " ";
+                }
+
+                messageContent += "\n";
+            }
+
+            messageContent += "Inscrits : ";
+
+            foreach (IUser u in users)
+            {
+                messageContent += $"{u.Mention} ";
+                registeredPlayer += $"{u.Mention} ";
+            }
+
+            sendedMessage = await channel.SendMessageAsync(messageContent);
+
+            thread = await sendedMessage.Thread.CreateThreadAsync(quest.name, ThreadType.PrivateThread);
+            await thread.SendMessageAsync($"Organisation de la séance avec {registeredPlayer} comme inscrit actuellement");
+
+            await command.RespondAsync("Mesage envoyé", ephemeral: true);
+
+        }
+
         public static async Task SendEphemeral(SocketSlashCommand command, string message)
         {
             await command.RespondAsync(message, ephemeral: true);
