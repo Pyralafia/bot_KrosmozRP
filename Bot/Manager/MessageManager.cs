@@ -42,8 +42,9 @@ namespace Bot.Manager
         public static async Task SendRollStatEcaAnswer(SocketSlashCommand command, string passif, RollTenRes roll, bool isGmRoll = false)
         {
             string res = $"**{command.User.GlobalName}** : \n\n";
+            string splitPassif = passif.Replace("◘", "\n");
 
-            res += $"Passif écaflip : {passif} \n\n";
+            res += $"__Passif écaflip :__ \n{splitPassif} \n\n";
 
             if (roll.nbSuccess != 0)
             {
