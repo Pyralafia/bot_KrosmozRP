@@ -1,4 +1,4 @@
-﻿using Bot.Misc;
+﻿using Bot.Model;
 using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
@@ -33,17 +33,18 @@ namespace Bot.Manager
             }
 
             res += $">>> Nb succès critique : {roll.nbCriticalSuccess}\n" +
-                $"Nb echec critique : {roll.nbFailure}\n" +
+                $"Nb echec critique : {roll.nbCriticalFailure}\n" +
                 $"```{roll.series}```";
 
             await command.RespondAsync(res, ephemeral:isGmRoll);
         }
 
-        public static async Task SendRollEca(SocketSlashCommand command, string passif, RollTenRes roll, bool isGmRoll = false)
+        public static async Task SendRollStatEcaAnswer(SocketSlashCommand command, string passif, RollTenRes roll, bool isGmRoll = false)
         {
             string res = $"**{command.User.GlobalName}** : \n\n";
+            string splitPassif = passif.Replace("◘", "\n");
 
-            res += $"Passif écaflip : {passif} \n\n";
+            res += $"__Passif écaflip :__ \n{splitPassif} \n\n";
 
             if (roll.nbSuccess != 0)
             {
@@ -51,7 +52,7 @@ namespace Bot.Manager
             }
 
             res += $">>> Nb succès critique : {roll.nbCriticalSuccess}\n" +
-                $"Nb echec critique : {roll.nbFailure}\n" +
+                $"Nb echec critique : {roll.nbCriticalFailure}\n" +
                 $"```{roll.series}```";
 
             await command.RespondAsync(res, ephemeral: isGmRoll);

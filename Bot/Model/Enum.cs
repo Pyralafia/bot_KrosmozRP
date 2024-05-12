@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bot.Misc
+namespace Bot.Model
 {
     enum RollResultType
     {
@@ -15,7 +15,7 @@ namespace Bot.Misc
         Undefined
     }
 
-    enum Classes
+    public enum Classes
     {
         Ecaflip = 1,
         Eniripsa,

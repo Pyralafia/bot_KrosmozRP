@@ -1,4 +1,4 @@
-﻿using Bot.Misc;
+﻿using Bot.Model;
 using Discord.Rest;
 using System;
 using System.Collections.Generic;
@@ -11,12 +11,15 @@ namespace Bot.Manager
     internal class PlayerManager
     {
         Dictionary<ulong, Player> playerDictio;
+        Dictionary<ulong, CharacterSheet> sheetDictio;
 
         public PlayerManager()
         {
             playerDictio = new Dictionary<ulong, Player>();
+            sheetDictio = new Dictionary<ulong, CharacterSheet>();
         }
 
+        #region // Player admin
         public List<Player> GetPlayerList()
         {
             return playerDictio.Values.ToList();
@@ -61,5 +64,32 @@ namespace Bot.Manager
                 return "Vous n'êtes pas encore enregistrer comme player, ou je bug. Dans les deux cas, contacter la MJ";
             }
         }
+        #endregion
+
+        #region // Character Sheet admin
+        public void LoadCharacterSheet(List<CharacterSheet> sheetList)
+        {
+            foreach (CharacterSheet sheet in sheetList)
+            {
+                if (!sheetDictio.ContainsKey(ulong.Parse(sheet.id)))
+                {
+                    sheet.ConvertXmlStringToClass();
+                    sheetDictio.Add(ulong.Parse(sheet.id), sheet);
+                }
+            }
+        }
+
+        public CharacterSheet GetCharacterSheet(ulong id)
+        {
+            if (sheetDictio.ContainsKey(id))
+            {
+                return sheetDictio[id];
+            }
+            else
+            {
+                return null;
+            }
+        }
+        #endregion
     }
 }

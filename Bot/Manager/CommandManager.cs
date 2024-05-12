@@ -1,5 +1,5 @@
 ﻿using Bot.Command;
-using Bot.Misc;
+using Bot.Model;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
@@ -29,16 +29,14 @@ namespace Bot.Manager
             //roll command
             SlashCommandBuild("roll", "Lancer de dé au format classique XdY+Z", options: new CommandOption[] { diceString });
             SlashCommandBuild("rollstat", "Faire un test de Xd10", options: new CommandOption[] { nbDice });
-            /*
+            
             SlashCommandBuild("rollsag", "Faire un test de sagesse", options: new CommandOption[] { nbDiceBonus });
             SlashCommandBuild("rollagi", "Faire un test d'agilité", options: new CommandOption[] { nbDiceBonus });
             SlashCommandBuild("rollcha", "Faire un test de chance", options: new CommandOption[] { nbDiceBonus });
             SlashCommandBuild("rollfor", "Faire un test de force", options: new CommandOption[] { nbDiceBonus });
             SlashCommandBuild("rollint", "Faire un test d'intelligence", options: new CommandOption[] { nbDiceBonus });
-            SlashCommandBuild("rolleca", "Faire un test de Xd10 en étant un(e) Ecaflip", options: new CommandOption[] { nbDice });
-            */
 
-            //misc command
+            //Sheet command
             SlashCommandBuild("sheet", "Vous renvois le lien vers votre fiche de personnage");
 
             //gm command
@@ -77,23 +75,24 @@ namespace Bot.Manager
 
         public async Task SlashCommandHandler(SocketSlashCommand command)
         {
+            string stats = "";
             switch (command.Data.Name)
             {
                 case "sheet":
-                    ProcessSheet(command);
+                    Admin.SendCharacterSheet(command);
                     break;
 
                 case "roll":
                     if (AllDiceFormatChecker(command))
                     {
-                        Roll.RollAllDices(command);
+                        await MessageManager.SendRollAnswer(command, Roll.RollAllDices(command));
                     }
                     break;
 
                 case "gmroll":
                     if (AllDiceFormatChecker(command))
                     {
-                        Roll.RollAllDices(command, true);
+                        await MessageManager.SendRollAnswer(command, Roll.RollAllDices(command), true);
                     }
                     break;
 
@@ -102,27 +101,34 @@ namespace Bot.Manager
                 case "rollcha":
                 case "rollfor":
                 case "rollint":
-                    await command.RespondAsync($"Commande non disponible pour le moment, un peu de patience !", ephemeral: true);
+                    if (BotKrosmozRP.botKrosmoz.PlayerManager.GetCharacterSheet(command.User.Id).classe == Classes.Ecaflip)
+                    {
+                        (string passif, Roll.RollTenRes res) = Roll.RollEcaStat(command);
+                        await MessageManager.SendRollStatEcaAnswer(command, passif, res);
+                    }
+                    else
+                    {
+                        await MessageManager.SendRollStatAnswer(command, Roll.RollStats(command));
+                    }
                     break;
 
                 case "rollstat":
-                    await MessageManager.SendRollStatAnswer(command, Roll.RollTenDice(int.Parse(command.Data.Options.First().Value.ToString())));
+                    await MessageManager.SendRollStatAnswer(command, Roll.RollTenDice(command));
                     break;
 
                 case "gmrollstat":
-                    await MessageManager.SendRollStatAnswer(command, Roll.RollTenDice(int.Parse(command.Data.Options.First().Value.ToString())), true);
-                    break;
-
-                case "rolleca":
-                    ProcessEcaRoll(command);
+                    await MessageManager.SendRollStatAnswer(command, Roll.RollTenDice(command), true);
                     break;
 
                 case "gmrolleca":
-                    ProcessEcaRoll(command, true);
+                    if (AllDiceFormatChecker(command))
+                    {
+                        Roll.RollTenEca(command);
+                    }
                     break;
 
                 case "register":
-                    ProcessRegisterPlayer(command);
+                    Admin.RegisterPlayer(command);
                     break;
 
                 case "updatequest":
@@ -159,29 +165,6 @@ namespace Bot.Manager
             }
 
             return res;
-        }
-
-        private async void ProcessEcaRoll(SocketSlashCommand command, bool isGm = false)
-        {
-            (string passif, Roll.RollTenRes roll) = Roll.RollEca(int.Parse(command.Data.Options.First().Value.ToString()));
-            await MessageManager.SendRollEca(command, passif, roll, isGm);
-        }
-
-        private async void ProcessRegisterPlayer(SocketSlashCommand command)
-        {
-            ulong idPlayer = ((IUser)command.Data.Options.First().Value).Id;
-            string link = command.Data.Options.Last().Value.ToString();
-
-            string status = BotKrosmozRP.botKrosmoz.PlayerManager.RegisterPlayer(idPlayer, link);
-
-            await MessageManager.SendEphemeral(command, status);
-        }
-
-        private async void ProcessSheet(SocketSlashCommand command)
-        {
-            ulong id = command.User.Id;
-            string res = BotKrosmozRP.botKrosmoz.PlayerManager.GetPlayerSheet(id);
-            await MessageManager.SendEphemeral(command, res);
         }
     }
 }

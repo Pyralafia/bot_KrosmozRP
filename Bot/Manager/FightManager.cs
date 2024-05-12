@@ -1,4 +1,4 @@
-﻿using Bot.Misc;
+﻿using Bot.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;

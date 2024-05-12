@@ -1,11 +1,12 @@
 ﻿using Bot.Manager;
-using Bot.Misc;
+using Bot.Model;
 using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace Bot.Command
 {
@@ -14,13 +15,12 @@ namespace Bot.Command
         public struct RollTenRes
         {
             public string series;
-            public string ecaRoll;
             public int nbSuccess;
             public int nbCriticalSuccess;
-            public int nbFailure;
+            public int nbCriticalFailure;
         }
 
-        public static async void RollAllDices(SocketSlashCommand command, bool asGm = false)
+        public static string[] RollAllDices(SocketSlashCommand command)
         {
             Random random = new Random();
             string options = command.Data.Options.First().Value.ToString().ToLower();
@@ -42,10 +42,10 @@ namespace Bot.Command
             total += additionnal;
             resString[0] = total.ToString();
 
-            await MessageManager.SendRollAnswer(command, resString, asGm);
+            return resString;
         }
 
-        public static RollTenRes RollTenDice(int nbDice, int scoreSuccess = -1)
+        private static RollTenRes RollTen(int nbDice, int scoreSuccess = -1)
         {
             Random rand = new Random();
             RollTenRes res = new RollTenRes();
@@ -65,23 +65,69 @@ namespace Bot.Command
                 }
                 else if (roll == 10)
                 {
-                    res.nbFailure++;
+                    res.nbCriticalFailure++;
                 }
 
                 res.series += $" {roll} ";
             }
-
             return res;
         }
 
-        public static (string eca, RollTenRes roll) RollEca(int nbDice, int scoreSuccess = -1)
+        public static RollTenRes RollTenDice(SocketSlashCommand command)
+        {
+            int nbDice = int.Parse(command.Data.Options.First().Value.ToString());
+            int scoreSuccess = command.Data.Options.Count() > 1 ? int.Parse(command.Data.Options.Last().Value.ToString()) : -1;
+
+            return RollTen(nbDice, scoreSuccess);
+        }
+
+        public static RollTenRes RollStats(SocketSlashCommand command)
+        {
+            int nbDice = -1;
+            int diceModifier = command.Data.Options.Count() == 1 ? int.Parse(command.Data.Options.Last().Value.ToString()) : 0;
+            CharacterSheet sheet = BotKrosmozRP.botKrosmoz.PlayerManager.GetCharacterSheet(command.User.Id);
+
+            switch (command.Data.Name)
+            {
+                case "rollsag":
+                    nbDice = sheet.wisdom;
+                    break;
+                case "rollagi":
+                    nbDice = sheet.agility;
+                    break;
+                case "rollcha":
+                    nbDice = sheet.luck;
+                    break;
+                case "rollfor":
+                    nbDice = sheet.strength;
+                    break;
+                case "rollint":
+                    nbDice = sheet.intelligence;
+                    break;
+            }
+
+            nbDice += diceModifier;
+
+            return RollTen(nbDice);
+        }
+
+        public static (string passif, RollTenRes resRoll) RollEcaStat(SocketSlashCommand command)
+        {
+            Random rand = new Random();
+            RollTenRes resRoll = RollStats(command);
+            string resPassif = BotKrosmozRP.botKrosmoz.PassifEca[rand.Next(BotKrosmozRP.botKrosmoz.PassifEca.Length)];
+
+            return (resPassif, resRoll);
+        }
+
+        public static (string eca, RollTenRes roll) RollTenEca(SocketSlashCommand command)
         {
             Random random = new Random();
-            RollTenRes resRoll = RollTenDice(nbDice, scoreSuccess);
+            RollTenRes resRoll = RollTenDice(command);
 
-            string resString = BotKrosmozRP.botKrosmoz.PassifEca[random.Next(6)];
+            string resPassif = BotKrosmozRP.botKrosmoz.PassifEca[random.Next(BotKrosmozRP.botKrosmoz.PassifEca.Length)];
 
-            return (resString, resRoll);
+            return (resPassif, resRoll);
         }
 
         // 34% to gain between 10 and 100, return 0 if the sram don't get anything
