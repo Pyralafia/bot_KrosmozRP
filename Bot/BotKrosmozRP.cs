@@ -71,7 +71,7 @@ namespace Bot
             _playerManager.LoadPlayerList(FileManager.LoadPlayers());
             _playerManager.LoadCharacterSheet(FileManager.LoadCharacterSheet());
 
-            _commandManager.SetGuild(_client.GetGuild(guildId));
+            _commandManager.SetGuild(_client.GetGuild(_guildId));
             _commandManager.SetupCommand();
             
 			_pyralafia = await Client.GetUserAsync(727970687095930991);

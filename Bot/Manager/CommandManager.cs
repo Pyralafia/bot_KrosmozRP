@@ -47,8 +47,8 @@ namespace Bot.Manager
             SlashCommandBuild("gmroll", "Lancer de dé au format classique XdY", true, options: new CommandOption[] { diceString });
             SlashCommandBuild("gmrollstat", "Faire un test de Xd10", true, options: new CommandOption[] { nbDice });
             SlashCommandBuild("register", "enregistrer un joueur", true, options: new CommandOption[] { player, linkString });
-            SlashCommandBuild("updatrequest", "Met à jour le tableau des quêtes", true);
-            SlashCommandBuild("createquest", "Créé une quete à partir de son idée et l'ajoute au tableau de quête", true, options: new CommandOption[] { questId });
+            SlashCommandBuild("updatequest", "Met à jour le tableau des quêtes", true);
+            //SlashCommandBuild("createquest", "Créé une quete à partir de son idée et l'ajoute au tableau de quête", true, options: new CommandOption[] { questId });
             SlashCommandBuild("createsession", "Créé un le message et le thread pour l'organisation d'une session", 
                                 true, new CommandOption[] { questId, playerDedicated, playerDedicatedTwo, playerDedicatedThree });
 
@@ -73,7 +73,8 @@ namespace Bot.Manager
 
             try
             {
-                await _guild.CreateApplicationCommandAsync(command.Build());
+                _guild.CreateApplicationCommandAsync(command.Build());
+                Console.WriteLine($"Done creating {name}");
             }
             catch (Exception e)
             {

@@ -49,6 +49,7 @@ namespace Bot.Manager
                 Console.WriteLine($"Unable to retrieve player : {e}");
             }
 
+            Console.WriteLine("Done loading Players");
             return res;
         }
 
@@ -124,6 +125,7 @@ namespace Bot.Manager
                 Console.WriteLine($"Unable ton retrieve charactersheet : {e}");
             }
 
+            Console.WriteLine("Done loading characterSheet");
             return res;
         }
     }

@@ -10,6 +10,8 @@ namespace Bot.Model
     [XmlType("_")]
     public class Quest
     {
+        [XmlElement(ElementName = "Id")]
+        public int id;
         [XmlElement(ElementName = "Name")]
         public string name;
         [XmlElement(ElementName = "Level")]
