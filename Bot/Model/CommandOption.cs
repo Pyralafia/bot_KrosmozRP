@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bot.Misc
+namespace Bot.Model
 {
     internal class CommandOption
     {

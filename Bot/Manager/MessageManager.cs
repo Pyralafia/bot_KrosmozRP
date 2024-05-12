@@ -1,4 +1,4 @@
-﻿using Bot.Misc;
+﻿using Bot.Model;
 using Discord;
 using Discord.Rest;
 using Discord.WebSocket;

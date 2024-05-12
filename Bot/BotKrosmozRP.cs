@@ -1,5 +1,5 @@
 ﻿using Bot.Manager;
-using Bot.Misc;
+using Bot.Model;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
@@ -63,6 +63,7 @@ namespace Bot
 
             passifEca = FileManager.LoadPassifEca();
             _playerManager.LoadPlayerList(FileManager.LoadPlayers());
+            _playerManager.LoadCharacterSheet(FileManager.LoadCharacterSheet());
 
             _commandManager.SetGuild(_client.GetGuild(guildId));
             _commandManager.SetupCommand();

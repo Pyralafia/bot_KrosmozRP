@@ -1,5 +1,5 @@
 ﻿using Bot.Command;
-using Bot.Misc;
+using Bot.Model;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
@@ -36,7 +36,7 @@ namespace Bot.Manager
             SlashCommandBuild("rollfor", "Faire un test de force", options: new CommandOption[] { successValue });
             SlashCommandBuild("rollint", "Faire un test d'intelligence", options: new CommandOption[] { successValue });
 
-            //misc command
+            //Sheet command
             SlashCommandBuild("sheet", "Vous renvois le lien vers votre fiche de personnage");
 
             //gm command

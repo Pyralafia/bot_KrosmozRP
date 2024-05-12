@@ -1,4 +1,4 @@
-﻿using Bot.Misc;
+﻿using Bot.Model;
 using Discord.Rest;
 using System;
 using System.Collections.Generic;
@@ -67,6 +67,18 @@ namespace Bot.Manager
         #endregion
 
         #region // Character Sheet admin
+        public void LoadCharacterSheet(List<CharacterSheet> sheetList)
+        {
+            foreach (CharacterSheet sheet in sheetList)
+            {
+                if (!sheetDictio.ContainsKey((ushort)sheet.id))
+                {
+                    sheet.ConvertXmlStringToClass();
+                    sheetDictio.Add((ushort)sheet.id, sheet);
+                }
+            }
+        }
+
         public CharacterSheet GetCharacterSheet(ulong id)
         {
             if (sheetDictio.ContainsKey(id))

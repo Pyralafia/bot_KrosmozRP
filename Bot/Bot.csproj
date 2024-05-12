@@ -54,18 +54,6 @@
     <Reference Include="Discord.Net.WebSocket, Version=3.12.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Discord.Net.WebSocket.3.12.0\lib\net461\Discord.Net.WebSocket.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis, Version=1.66.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.1.66.0\lib\net462\Google.Apis.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Auth, Version=1.66.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Auth.1.66.0\lib\net462\Google.Apis.Auth.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Core, Version=1.66.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Core.1.66.0\lib\net462\Google.Apis.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Sheets.v4, Version=1.66.0.3148, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Sheets.v4.1.66.0.3148\lib\net462\Google.Apis.Sheets.v4.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.1\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -124,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BotKrosmozRP.cs" />
+    <Compile Include="Command\Admin.cs" />
     <Compile Include="Command\Roll.cs" />
     <Compile Include="Manager\ButtonManager.cs" />
     <Compile Include="Manager\CommandManager.cs" />
@@ -132,16 +121,17 @@
     <Compile Include="Manager\MessageManager.cs" />
     <Compile Include="Manager\PlayerManager.cs" />
     <Compile Include="Manager\QuestManager.cs" />
-    <Compile Include="Misc\CommandOption.cs" />
-    <Compile Include="Misc\Fight.cs" />
-    <Compile Include="Misc\Enum.cs" />
-    <Compile Include="Misc\GoogleSheetsHelper.cs" />
-    <Compile Include="Misc\Mob.cs" />
-    <Compile Include="Misc\MobFight.cs" />
-    <Compile Include="Misc\Player.cs" />
+    <Compile Include="Model\CharacterSheet.cs" />
+    <Compile Include="Model\CommandOption.cs" />
+    <Compile Include="Model\Fight.cs" />
+    <Compile Include="Model\Enum.cs" />
+    <Compile Include="Model\Mob.cs" />
+    <Compile Include="Model\MobFight.cs" />
+    <Compile Include="Model\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Files\CharacterSheet.xml" />
     <Content Include="Krosmoz.ico" />
     <None Include="App.config" />
     <Content Include="Files\DiscordServer.txt" />

@@ -1,4 +1,4 @@
-﻿using Bot.Misc;
+﻿using Bot.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -110,7 +110,7 @@ namespace Bot.Manager
         public static List<CharacterSheet> LoadCharacterSheet()
         {
             List<CharacterSheet> res = new List<CharacterSheet>();
-            XmlSerializer serializer = new XmlSerializer(typeof(List<CharacterSheet>));
+            XmlSerializer serializer = new XmlSerializer(typeof(List<CharacterSheet>), new XmlRootAttribute("Fiches"));
 
             try
             {

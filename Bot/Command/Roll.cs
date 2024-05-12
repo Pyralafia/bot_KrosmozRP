@@ -1,5 +1,5 @@
 ﻿using Bot.Manager;
-using Bot.Misc;
+using Bot.Model;
 using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
