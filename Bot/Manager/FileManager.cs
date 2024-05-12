@@ -54,7 +54,7 @@ namespace Bot.Manager
 
         public static ulong[] GetServerIDs()
         {
-            ulong[] res = new ulong[2];
+            ulong[] res = new ulong[3];
 
             using (FileStream stream = new FileStream("../../Files/DiscordServer.txt", FileMode.Open))
             {

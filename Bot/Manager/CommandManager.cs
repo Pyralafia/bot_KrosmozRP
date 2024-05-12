@@ -25,6 +25,8 @@ namespace Bot.Manager
             CommandOption successValue = new CommandOption("success_value", ApplicationCommandOptionType.Integer, "La valeur de succès annoncée par la MJ", false);
             CommandOption player = new CommandOption("player", ApplicationCommandOptionType.User, "Le tag du joueur");
             CommandOption playerDedicated = new CommandOption("player", ApplicationCommandOptionType.User, "Le tag du joueur", false);
+            CommandOption playerDedicatedTwo = new CommandOption("player2", ApplicationCommandOptionType.User, "Le tag du joueur", false);
+            CommandOption playerDedicatedThree = new CommandOption("player3", ApplicationCommandOptionType.User, "Le tag du joueur", false);
             CommandOption linkString = new CommandOption("link_charactersheet", ApplicationCommandOptionType.String, "Le lien complet vers la fiche personnage");
             CommandOption questId = new CommandOption("quest_id", ApplicationCommandOptionType.Integer, "L'ID de la quete concernée");
                  
@@ -48,7 +50,10 @@ namespace Bot.Manager
             SlashCommandBuild("gmrollstat", "Faire un test de Xd10", true, options: new CommandOption[] { nbDice });
             SlashCommandBuild("register", "enregistrer un joueur", true, options: new CommandOption[] { player, linkString });
             SlashCommandBuild("updatrequest", "Met à jour le tableau des quêtes", true);
-            SlashCommandBuild("createsession", "Créé un le message et le thread pour l'organisation d'une session", true, new CommandOption[] { questId, playerDedicated, playerDedicated });
+            SlashCommandBuild("createquest", "Créé une quete à partir de son idée et l'ajoute au tableau de quête", true, options: new CommandOption[] { questId });
+            SlashCommandBuild("createsession", "Créé un le message et le thread pour l'organisation d'une session", 
+                                true, new CommandOption[] { questId, playerDedicated, playerDedicatedTwo, playerDedicatedThree });
+
         }
 
         private async void SlashCommandBuild(string name, string description, bool isForGM = false, params CommandOption[] options)
@@ -74,7 +79,7 @@ namespace Bot.Manager
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine($"Error creating '{name}' : {e.Message}");
             }
         }
 
@@ -134,6 +139,10 @@ namespace Bot.Manager
 
                 case "createsession":
                     await MessageManager.SendCreateSession(command, QuestManager.GetQuestById(int.Parse(command.Data.Options.First().Value.ToString())));
+                    break;
+
+                case "createquest":
+                    await MessageManager.SendUniqueQuest(command, QuestManager.GetQuestById(int.Parse(command.Data.Options.First().Value.ToString())));
                     break;
 
                 default:
