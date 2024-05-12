@@ -71,10 +71,10 @@ namespace Bot.Manager
         {
             foreach (CharacterSheet sheet in sheetList)
             {
-                if (!sheetDictio.ContainsKey((ushort)sheet.id))
+                if (!sheetDictio.ContainsKey(ulong.Parse(sheet.id)))
                 {
                     sheet.ConvertXmlStringToClass();
-                    sheetDictio.Add((ushort)sheet.id, sheet);
+                    sheetDictio.Add(ulong.Parse(sheet.id), sheet);
                 }
             }
         }

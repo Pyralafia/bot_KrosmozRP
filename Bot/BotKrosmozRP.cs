@@ -68,6 +68,7 @@ namespace Bot
             _commandManager.SetGuild(_client.GetGuild(guildId));
             _commandManager.SetupCommand();
 
+            Console.WriteLine("Loading done.");
             return Task.CompletedTask;
         }
 

@@ -8,16 +8,17 @@ using System.Xml.Serialization;
 
 namespace Bot.Model
 {
+    [XmlType("_")]
     public class CharacterSheet
     {
         [XmlElement(ElementName = "Id")]
-        public int id;
+        public string id;
         [XmlElement(ElementName = "Classe")]
         public string classeXmlString;
         public Classes classe;
         [XmlElement(ElementName = "Sagesse")]
         public int wisdom;
-        [XmlElement(ElementName = "Agilité")]
+        [XmlElement(ElementName = "Agilite")]
         public int agility;
         [XmlElement(ElementName = "Chance")]
         public int luck;
@@ -25,6 +26,8 @@ namespace Bot.Model
         public int strength;
         [XmlElement(ElementName = "Intelligence")]
         public int intelligence;
+
+        public CharacterSheet() { }
 
         public void ConvertXmlStringToClass()
         {

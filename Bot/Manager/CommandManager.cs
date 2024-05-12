@@ -30,11 +30,11 @@ namespace Bot.Manager
             SlashCommandBuild("roll", "Lancer de dé au format classique XdY+Z", options: new CommandOption[] { diceString });
             SlashCommandBuild("rollstat", "Faire un test de Xd10", options: new CommandOption[] { nbDice });
             
-            SlashCommandBuild("rollsag", "Faire un test de sagesse", options: new CommandOption[] { successValue });
-            SlashCommandBuild("rollagi", "Faire un test d'agilité", options: new CommandOption[] { successValue });
-            SlashCommandBuild("rollcha", "Faire un test de chance", options: new CommandOption[] { successValue });
-            SlashCommandBuild("rollfor", "Faire un test de force", options: new CommandOption[] { successValue });
-            SlashCommandBuild("rollint", "Faire un test d'intelligence", options: new CommandOption[] { successValue });
+            SlashCommandBuild("rollsag", "Faire un test de sagesse", options: new CommandOption[] { nbDiceBonus });
+            SlashCommandBuild("rollagi", "Faire un test d'agilité", options: new CommandOption[] { nbDiceBonus });
+            SlashCommandBuild("rollcha", "Faire un test de chance", options: new CommandOption[] { nbDiceBonus });
+            SlashCommandBuild("rollfor", "Faire un test de force", options: new CommandOption[] { nbDiceBonus });
+            SlashCommandBuild("rollint", "Faire un test d'intelligence", options: new CommandOption[] { nbDiceBonus });
 
             //Sheet command
             SlashCommandBuild("sheet", "Vous renvois le lien vers votre fiche de personnage");

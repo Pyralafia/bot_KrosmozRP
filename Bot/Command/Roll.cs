@@ -84,7 +84,7 @@ namespace Bot.Command
         public static RollTenRes RollStats(SocketSlashCommand command)
         {
             int nbDice = -1;
-            int scoreSuccess = command.Data.Options.Count() > 1 ? int.Parse(command.Data.Options.Last().Value.ToString()) : -1;
+            int diceModifier = command.Data.Options.Count() == 1 ? int.Parse(command.Data.Options.Last().Value.ToString()) : 0;
             CharacterSheet sheet = BotKrosmozRP.botKrosmoz.PlayerManager.GetCharacterSheet(command.User.Id);
 
             switch (command.Data.Name)
@@ -106,7 +106,9 @@ namespace Bot.Command
                     break;
             }
 
-            return RollTen(nbDice, scoreSuccess);
+            nbDice += diceModifier;
+
+            return RollTen(nbDice);
         }
 
         public static (string passif, RollTenRes resRoll) RollEcaStat(SocketSlashCommand command)
