@@ -17,18 +17,23 @@ namespace Bot
         private CommandManager _commandManager;
         private ButtonManager _buttonManager;
         private PlayerManager _playerManager;
+        private IUser _pyralafia;
 
-        private ulong guildId;
-        private ulong questChannelId;
-        private string[] passifEca;
+        private ulong _guildId;
+        private ulong _questChannelId;
+        private ulong _organisationChannelId;
+        private string[] _passifEca;
 
         public DiscordSocketClient Client { get { return _client; } }
         public PlayerManager PlayerManager { get { return _playerManager; } }
 
-        public ulong GuildId { get { return guildId; } }
-        public ulong QuestChannelId { get { return questChannelId; } }
+        public ulong GuildId { get { return _guildId; } }
+        public ulong QuestChannelId { get { return _questChannelId; } }
+        public ulong OrganisationChannelId { get { return _organisationChannelId; } }
 
-        public string[] PassifEca { get { return passifEca; } }
+        public IUser Pyra { get { return _pyralafia; } }
+
+        public string[] PassifEca { get { return _passifEca; } }
 
         public static Task Main(string[] args) => new BotKrosmozRP().MainAsync();
 
@@ -54,20 +59,23 @@ namespace Bot
             await Task.Delay(-1);
         }
 
-        public Task ClientReady()
+        public async Task<Task> ClientReady()
         {
             ulong[] serverInfo = FileManager.GetServerIDs();
 
-            guildId = serverInfo[0];
-            questChannelId = serverInfo[1];
+            _guildId = serverInfo[0];
+            _questChannelId = serverInfo[1];
+            _organisationChannelId = serverInfo[2];
 
-            passifEca = FileManager.LoadPassifEca();
+            _passifEca = FileManager.LoadPassifEca();
             _playerManager.LoadPlayerList(FileManager.LoadPlayers());
             _playerManager.LoadCharacterSheet(FileManager.LoadCharacterSheet());
 
             _commandManager.SetGuild(_client.GetGuild(guildId));
             _commandManager.SetupCommand();
-
+            
+			_pyralafia = await Client.GetUserAsync(727970687095930991);
+			
             Console.WriteLine("Loading done.");
             return Task.CompletedTask;
         }

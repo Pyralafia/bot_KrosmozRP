@@ -11,7 +11,7 @@ namespace Bot.Manager
 {
     internal static class QuestManager
     {
-       public static List<Quest> GetQuestBoard()
+        public static List<Quest> GetQuestBoard()
        {
             List<Quest> allQuests = FileManager.LoadQuests();
             List<Quest> activQuest = new List<Quest>();
@@ -56,6 +56,23 @@ namespace Bot.Manager
                 return board;
             }
 
+        }
+
+        public static Quest GetQuestById(int id)
+        {
+            Quest res = null;
+            List<Quest> allQuests = FileManager.LoadQuests();
+
+            foreach (Quest q in allQuests)
+            {
+                if (q.id == id)
+                {
+                    res = q;
+                    break;
+                }
+            }
+
+            return res;
         }
     }
 }

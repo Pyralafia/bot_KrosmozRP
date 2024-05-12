@@ -54,13 +54,13 @@ namespace Bot.Manager
 
         public static ulong[] GetServerIDs()
         {
-            ulong[] res = new ulong[2];
+            ulong[] res = new ulong[3];
 
             using (FileStream stream = new FileStream("../../Files/DiscordServer.txt", FileMode.Open))
             {
                 using (StreamReader reader = new StreamReader(stream))
                 {
-                    for (int i = 0; i < 2; i++)
+                    for (int i = 0; i < 3; i++)
                     {
                         res[i] = ulong.Parse(reader.ReadLine());
                     }

@@ -145,8 +145,6 @@
   <ItemGroup>
     <Content Include="Files\passif_eca.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="API\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
