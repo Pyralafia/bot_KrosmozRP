@@ -63,33 +63,41 @@ namespace Bot.Manager
         {
             ITextChannel channel = (ITextChannel)await BotKrosmozRP.botKrosmoz.Client.GetChannelAsync(BotKrosmozRP.botKrosmoz.QuestChannelId);
             var messages = await channel.GetMessagesAsync(250).FlattenAsync();
-            await channel.DeleteMessagesAsync(messages);
-
-            for (int i = 0; i < questList.Count; i++)
+            try
             {
-                EmbedBuilder embed = new EmbedBuilder()
-                    .WithTitle($"[{questList[i].id}] {questList[i].name}")
-                    .WithDescription(questList[i].description + "\n ---------------------------------")
-                    .WithColor(questList[i].rarity == "Classique" ? Color.LightGrey : Color.Orange);
-                embed.AddField("Specifications : ",
-                    $"Type : {questList[i].type}\n" +
-                    $"Niveau : {questList[i].lvl}\n" +
-                    $"Nb recommandé : {questList[i].playerMax}\n" +
-                    $"Récompenses monétaire : {questList[i].kamas}\n" +
-                    $"Récompenses spécifiques : {questList[i].reward}\n" +
-                    "--------------------------------- \n" +
-                    "Check si intéressé(e)   \u2705 ");
-
-                if (questList[i].playerName != "")
+                await channel.DeleteMessagesAsync(messages); 
+                await channel.SendMessageAsync($"Cher(e)s {MentionUtils.MentionRole(1239254629280256030)}, le tableau des quêtes a été mis à jour.");
+                
+                for (int i = 0; i < questList.Count; i++)
                 {
-                    embed.WithFooter($"Quête d'histoire pour {questList[i].playerName}");
+                    EmbedBuilder embed = new EmbedBuilder()
+                        .WithTitle($"[{questList[i].id}] {questList[i].name}")
+                        .WithDescription(questList[i].description + "\n ---------------------------------")
+                        .WithColor(questList[i].rarity == "Classique" ? Color.LightGrey : Color.Orange);
+                    embed.AddField("Specifications : ",
+                        $"Type : {questList[i].type}\n" +
+                        $"Niveau : {questList[i].lvl}\n" +
+                        $"Nb recommandé : {questList[i].playerMax}\n" +
+                        $"Récompenses monétaire : {questList[i].kamas}\n" +
+                        $"Récompenses spécifiques : {questList[i].reward}\n" +
+                        "--------------------------------- \n" +
+                        "Check si intéressé(e)   \u2705 ");
+
+                    if (questList[i].playerName != "")
+                    {
+                        embed.WithFooter($"Quête d'histoire pour {questList[i].playerName}");
+                    }
+
+                    IMessage message = await channel.SendMessageAsync("", embed: embed.Build());
+                    message.AddReactionAsync(new Emoji("\u2705"));
                 }
 
-                IMessage message = await channel.SendMessageAsync("", embed: embed.Build());
-                message.AddReactionAsync(new Emoji("\u2705"));
+                await command.RespondAsync("Quests updated with success", ephemeral: true);
             }
-
-            await command.RespondAsync("Quests updated with success", ephemeral: true);
+            catch (Exception ex)
+            {
+                await command.RespondAsync($"{ex.Message}");
+            }
         }
 
         public static async Task SendUniqueQuest(SocketSlashCommand command, Quest quest)

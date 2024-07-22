@@ -145,11 +145,11 @@ namespace Bot.Manager
                     break;
 
                 case "createsession":
-                    await MessageManager.SendCreateSession(command, QuestManager.GetQuestById(int.Parse(command.Data.Options.First().Value.ToString())));
+                    await MessageManager.SendCreateSession(command, QuestManager.GetQuestById(command.Data.Options.First().Value.ToString()));
                     break;
 
                 case "createquest":
-                    await MessageManager.SendUniqueQuest(command, QuestManager.GetQuestById(int.Parse(command.Data.Options.First().Value.ToString())));
+                    await MessageManager.SendUniqueQuest(command, QuestManager.GetQuestById((command.Data.Options.First().Value.ToString())));
                     break;
 
                 default:

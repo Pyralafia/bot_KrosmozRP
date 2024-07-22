@@ -58,7 +58,7 @@ namespace Bot.Manager
 
         }
 
-        public static Quest GetQuestById(int id)
+        public static Quest GetQuestById(string id)
         {
             Quest res = null;
             List<Quest> allQuests = FileManager.LoadQuests();

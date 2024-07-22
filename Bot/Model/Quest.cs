@@ -11,11 +11,11 @@ namespace Bot.Model
     public class Quest
     {
         [XmlElement(ElementName = "Id")]
-        public int id;
+        public string id;
         [XmlElement(ElementName = "Name")]
         public string name;
         [XmlElement(ElementName = "Level")]
-        public int lvl;
+        public string lvl;
         [XmlElement(ElementName = "Type")]
         public string type;
         [XmlElement(ElementName = "Rarity")]
@@ -23,7 +23,7 @@ namespace Bot.Model
         [XmlElement(ElementName = "Repetability")]
         public string repeated;
         [XmlElement(ElementName = "NbMax")]
-        public int playerMax;
+        public string playerMax;
         [XmlElement(ElementName = "Dedicated")]
         public string playerName;
         [XmlElement(ElementName = "Description")]
