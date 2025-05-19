@@ -111,6 +111,16 @@ namespace Bot.Command
             return RollTen(nbDice);
         }
 
+        public static string Roll100(SocketSlashCommand command)
+        {
+            string res = "";
+            Random rand = new Random();
+
+            res = rand.Next(1, 101).ToString();
+            Console.WriteLine(res);
+            return res;
+        }
+
         public static (string passif, RollTenRes resRoll) RollEcaStat(SocketSlashCommand command)
         {
             Random rand = new Random();

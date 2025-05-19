@@ -1,12 +1,9 @@
 ﻿using Bot.Command;
 using Bot.Model;
 using Discord;
-using Discord.Interactions;
 using Discord.WebSocket;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Bot.Manager
@@ -17,7 +14,7 @@ namespace Bot.Manager
 
         public void SetGuild(SocketGuild guild) { _guild = guild; }
 
-        public void SetupCommand()
+        public void SetupCommandKrosmoz()
         {
             CommandOption diceString = new CommandOption("roll", ApplicationCommandOptionType.String, "Le roll à effectué au format XdY+Z (où +Z est optionnel)", false);
             CommandOption nbDice = new CommandOption("nb_dés", ApplicationCommandOptionType.Integer, "Le nombre de d10 à lancer");
@@ -51,6 +48,18 @@ namespace Bot.Manager
             //SlashCommandBuild("createquest", "Créé une quete à partir de son idée et l'ajoute au tableau de quête", true, options: new CommandOption[] { questId });
             SlashCommandBuild("createsession", "Créé un le message et le thread pour l'organisation d'une session", 
                                 true, new CommandOption[] { questId, playerDedicated, playerDedicatedTwo, playerDedicatedThree });
+
+        }
+
+        public void SetupCommandElyrasianda()
+        {
+            CommandOption diceString = new CommandOption("roll", ApplicationCommandOptionType.String, 
+                "Le roll à effectué au format XdY+Z (où +Z est optionnel)", false);
+            CommandOption player = new CommandOption("player", ApplicationCommandOptionType.User, "Le tag du joueur");
+
+            SlashCommandBuild("roll", "Lancé de dé de base"); 
+            SlashCommandBuild("gmroll", "Lancer de dé au format classique XdY", true, options: new CommandOption[] { diceString });
+            SlashCommandBuild("register", "Enregistrer un joueur", true, options: new CommandOption[] { player });
 
         }
 
@@ -92,14 +101,22 @@ namespace Bot.Manager
                     break;
 
                 case "roll":
-                    if (AllDiceFormatChecker(command))
+                    if (command.Data.Options.Count == 0)
+                    {
+                        await MessageManager.SendRollAnswer(command, Roll.Roll100(command));
+                    }
+                    else if (AllDiceFormatChecker(command))
                     {
                         await MessageManager.SendRollAnswer(command, Roll.RollAllDices(command));
                     }
                     break;
 
                 case "gmroll":
-                    if (AllDiceFormatChecker(command))
+                    if (command.Data.Options.Count == 0)
+                    {
+                        await MessageManager.SendRollAnswer(command, Roll.Roll100(command), true);
+                    }
+                    else if (AllDiceFormatChecker(command))
                     {
                         await MessageManager.SendRollAnswer(command, Roll.RollAllDices(command), true);
                     }

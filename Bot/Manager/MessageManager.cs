@@ -15,6 +15,14 @@ namespace Bot.Manager
 {
     internal static class MessageManager
     {
+        //command utilisée pour els roll sans param
+        public static async Task SendRollAnswer(SocketSlashCommand command, string rollString, bool isGmRoll = false)
+        {
+            string res = $"**{command.User.GlobalName}** → \n" +
+                $"``` {rollString}```";
+            await command.RespondAsync(res, ephemeral: isGmRoll);
+        }
+
         public static async Task SendRollAnswer(SocketSlashCommand command, string[] rollString, bool isGmRoll = false)
         {
             string res = $"**{command.User.GlobalName}** → {command.Data.Options.First().Value} \n"+

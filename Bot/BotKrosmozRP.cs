@@ -41,7 +41,6 @@ namespace Bot
         {
             string token = FileManager.GetToken();
 
-
             botKrosmoz = this;
 
             _commandManager = new CommandManager();
@@ -64,15 +63,16 @@ namespace Bot
             ulong[] serverInfo = FileManager.GetServerIDs();
 
             _guildId = serverInfo[0];
-            _questChannelId = serverInfo[1];
-            _organisationChannelId = serverInfo[2];
+            //_questChannelId = serverInfo[1];
+            //_organisationChannelId = serverInfo[2];
 
-            _passifEca = FileManager.LoadPassifEca();
-            _playerManager.LoadPlayerList(FileManager.LoadPlayers());
-            _playerManager.LoadCharacterSheet(FileManager.LoadCharacterSheet());
+            //_passifEca = FileManager.LoadPassifEca();
+            //_playerManager.LoadPlayerList(FileManager.LoadPlayers());
+            //_playerManager.LoadCharacterSheet(FileManager.LoadCharacterSheet());
 
+            //_commandManager.SetupCommandKrosmoz();
             _commandManager.SetGuild(_client.GetGuild(_guildId));
-            _commandManager.SetupCommand();
+            _commandManager.SetupCommandElyrasianda();
             
 			_pyralafia = await Client.GetUserAsync(727970687095930991);
 			
